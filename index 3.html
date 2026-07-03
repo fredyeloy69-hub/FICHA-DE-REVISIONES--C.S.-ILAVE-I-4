@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Revisiones</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f7f6; }
+        h1 { color: #2c3e50; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #2c3e50; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>Reporte de Revisiones - Hospital de Apoyo Ilave</h1>
+    <table id="tabla-revisiones">
+        <thead>
+            <tr>
+                <th>Ítem</th>
+                <th>Revisión/Observación</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody id="cuerpo-tabla"></tbody>
+    </table>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+        // TU CONFIGURACIÓN DE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", 
+            authDomain: "prueba-de-base-de-datos-bcd6f.firebaseapp.com",
+            databaseURL: "https://prueba-de-base-de-datos-bcd6f-default-rtdb.firebaseio.com",
+            projectId: "prueba-de-base-de-datos-bcd6f",
+            storageBucket: "prueba-de-base-de-datos-bcd6f.appspot.com",
+            messagingSenderId: "258260402501",
+            appId: "1:258260402501:web:c2d1a95d772cd898ca7e2c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Referencia a la raíz de la base de datos
+        const dbRef = ref(db, 'revisiones');
+
+        onValue(dbRef, (snapshot) => {
+            const data = snapshot.val();
+            const cuerpoTabla = document.getElementById('cuerpo-tabla');
+            cuerpoTabla.innerHTML = ""; 
+
+            // Verificamos que los datos existan antes de recorrerlos
+            if (data) {
+                data.forEach((item) => {
+                    // Usamos corchetes para nombres de columnas con símbolos especiales
+                    let fila = `<tr>
+                        <td>${item['N°'] || ''}</td>
+                        <td>${item['REVISION:'] || ''}</td>
+                        <td>${item['REVISION:_1'] || 'N/A'}</td>
+                    </tr>`;
+                    cuerpoTabla.innerHTML += fila;
+                });
+            } else {
+                console.log("No se encontraron datos en la ruta especificada.");
+            }
+        });
+    </script>
+</body>
+</html>
