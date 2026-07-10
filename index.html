@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha de Observaciones - C.S. ILAVE</title>
+    <title>Gestión de Observaciones - C.S. ILAVE</title>
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -20,9 +20,10 @@
             --input-bg: #fff;
             --input-text: #333;
         }
+        
         .dark-mode {
             --bg-color: #121212;
-            --text-color: #f0f0f0;
+            --text-color: #e0e0e0;
             --card-bg: #1e1e1e;
             --header-bg: #0d2b4d;
             --header-text: #fff;
@@ -31,39 +32,87 @@
             --evaluador-bg: #332b00;
             --success: #2ea043;
             --danger: #f85149;
-            --dark-gray: #ccc;
+            --dark-gray: #bbb;
             --input-bg: #2d2d2d;
             --input-text: #fff;
         }
-        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; transition: 0.3s; }
-        #app-screen { padding: 20px; max-width: 1600px; margin: auto; }
-        table { width: 100%; border-collapse: collapse; background: var(--card-bg); }
-        th, td { border: 1px solid var(--border-color); padding: 10px; color: var(--text-color); }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; transition: 0.3s; }
+        
+        /* LOGIN SCREEN */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .login-box { background: var(--card-bg); padding: 40px 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; width: 400px; }
+        .login-icon { font-size: 45px; margin-bottom: 10px; }
+        .login-box h2 { color: var(--header-bg); font-size: 24px; margin: 0 0 5px 0; }
+        .login-subtitle { color: var(--dark-gray); font-size: 13px; margin: 0 0 20px 0; line-height: 1.4; }
+        .login-box input { width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 15px; background: var(--input-bg); color: var(--input-text); }
+        .role-cards-container { display: flex; gap: 15px; margin-bottom: 25px; }
+        .role-card { flex: 1; border: 2px solid var(--border-color); border-radius: 8px; padding: 15px 10px; cursor: pointer; transition: all 0.2s; background: var(--card-bg); }
+        .role-card:hover { border-color: #8fb1cc; }
+        .role-card.active { border-color: var(--header-bg); background-color: rgba(26, 82, 118, 0.1); }
+        .rc-icon { font-size: 24px; margin-bottom: 8px; }
+        .rc-title { font-weight: bold; font-size: 15px; color: var(--text-color); margin-bottom: 4px; }
+        .rc-desc { font-size: 11px; color: var(--dark-gray); }
+        .btn-ingresar { width: 100%; padding: 14px; background: var(--header-bg); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+
+        /* APP SCREEN */
+        #app-screen { display: none; padding: 20px; max-width: 1600px; margin: auto; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; background: var(--card-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .user-info { font-weight: bold; color: var(--header-bg); font-size: 16px; }
+        .filters { display: flex; gap: 15px; align-items: center; background: var(--bg-color); padding: 5px 15px; border-radius: 6px; border: 1px solid var(--border-color); }
+        .filters select { padding: 5px; border-radius: 4px; background: var(--input-bg); color: var(--input-text); border: 1px solid var(--border-color); }
+        .stats-bar { display: flex; gap: 20px; font-size: 16px; font-weight: bold; }
+        .controls { display: flex; gap: 10px; }
+        .btn-logout { background: var(--danger); color: white; padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; }
+        
+        /* TABLA */
+        .table-wrapper { overflow-x: auto; background: var(--card-bg); border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
+        th, td { border: 1px solid var(--border-color); padding: 10px; }
         th { background: var(--header-bg); color: var(--header-text); }
+        .area-header { background: #154360 !important; color: white !important; }
+        .subarea-header { background: #2e4053 !important; color: white !important; }
         .col-proyectista { background-color: var(--proyectista-bg); }
         .col-evaluador { background-color: var(--evaluador-bg); }
-        textarea { width: 100%; background: var(--input-bg); color: var(--input-text); border: 1px solid var(--border-color); }
+        textarea { width: 100%; padding: 8px; background: var(--input-bg); color: var(--input-text); border: 1px solid var(--border-color); border-radius: 4px; }
+        .img-preview { max-width: 80px; max-height: 80px; cursor: pointer; border: 1px solid var(--border-color); border-radius: 4px; }
     </style>
 </head>
 <body>
-    <div id="login-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:999;">
-        <div style="background:var(--card-bg); padding:40px; border-radius:12px; text-align:center;">
+    <div id="login-screen">
+        <div class="login-box">
+            <div class="login-icon">🏗️</div>
             <h2>Ficha de Observaciones</h2>
-            <p>C.S. ILAVE</p>
-            <input type="text" id="username" placeholder="Tu nombre..." style="padding:10px; width:80%; margin-bottom:10px;">
-            <br>
-            <button onclick="login('Proyectista')">✏️ Proyectista</button>
-            <button onclick="login('Evaluador')">🔍 Evaluador</button>
+            <p class="login-subtitle">C.S. ILAVE</p>
+            <input type="text" id="username" placeholder="Tu nombre...">
+            <div class="role-cards-container">
+                <div class="role-card" id="card-Proyectista" onclick="selectRoleTemp('Proyectista')">
+                    <div class="rc-icon">✏️</div><div class="rc-title">Proyectista</div>
+                </div>
+                <div class="role-card" id="card-Evaluador" onclick="selectRoleTemp('Evaluador')">
+                    <div class="rc-icon">🔍</div><div class="rc-title">Evaluador</div>
+                </div>
+            </div>
+            <button class="btn-ingresar" onclick="executeLogin()">Ingresar</button>
         </div>
     </div>
-    <div id="app-screen" style="display:none;">
-        <button onclick="toggleDarkMode()">🌙 Modo Oscuro/Claro</button>
+
+    <div id="app-screen">
+        <div class="top-bar">
+            <div id="display-user"></div>
+            <button onclick="toggleDarkMode()">🌙 Modo Oscuro/Claro</button>
+            <button class="btn-logout" onclick="logout()">Salir</button>
+        </div>
         <div class="table-wrapper">
-            <table id="main-table"><tbody id="table-body"></tbody></table>
+            <table id="main-table">
+                <tbody id="table-body"></tbody>
+            </table>
         </div>
     </div>
+
     <script type="module">
-        // El script JS se mantiene igual que en versiones anteriores
+        // (El código JS es el mismo de la versión anterior)
+        // ... (Aquí iría todo el script que ya tienes funcionando) ...
     </script>
 </body>
 </html>
