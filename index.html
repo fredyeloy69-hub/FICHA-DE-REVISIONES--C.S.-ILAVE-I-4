@@ -5,114 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Observaciones - C.S. ILAVE</title>
     <style>
-        :root {
-            --bg-color: #f4f6f9;
-            --text-color: #333;
-            --card-bg: #fff;
-            --header-bg: #1a5276;
-            --header-text: #fff;
-            --border-color: #ddd;
-            --proyectista-bg: #eaf4fc;
-            --evaluador-bg: #fffbe6;
-            --success: #28a745;
-            --danger: #dc3545;
-            --dark-gray: #666;
-            --input-bg: #fff;
-            --input-text: #333;
-        }
-        
-        .dark-mode {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --card-bg: #1e1e1e;
-            --header-bg: #0d2b4d;
-            --header-text: #fff;
-            --border-color: #444;
-            --proyectista-bg: #0d2235;
-            --evaluador-bg: #332b00;
-            --success: #2ea043;
-            --danger: #f85149;
-            --dark-gray: #bbb;
-            --input-bg: #2d2d2d;
-            --input-text: #fff;
-        }
-
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; transition: 0.3s; }
-        
-        /* LOGIN SCREEN */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-box { background: var(--card-bg); padding: 40px 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; width: 400px; }
-        .login-icon { font-size: 45px; margin-bottom: 10px; }
-        .login-box h2 { color: var(--header-bg); font-size: 24px; margin: 0 0 5px 0; }
-        .login-subtitle { color: var(--dark-gray); font-size: 13px; margin: 0 0 20px 0; line-height: 1.4; }
-        .login-box input { width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 15px; background: var(--input-bg); color: var(--input-text); }
-        .role-cards-container { display: flex; gap: 15px; margin-bottom: 25px; }
-        .role-card { flex: 1; border: 2px solid var(--border-color); border-radius: 8px; padding: 15px 10px; cursor: pointer; transition: all 0.2s; background: var(--card-bg); }
-        .role-card:hover { border-color: #8fb1cc; }
-        .role-card.active { border-color: var(--header-bg); background-color: rgba(26, 82, 118, 0.1); }
-        .rc-icon { font-size: 24px; margin-bottom: 8px; }
-        .rc-title { font-weight: bold; font-size: 15px; color: var(--text-color); margin-bottom: 4px; }
-        .rc-desc { font-size: 11px; color: var(--dark-gray); }
-        .btn-ingresar { width: 100%; padding: 14px; background: var(--header-bg); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
-
-        /* APP SCREEN */
-        #app-screen { display: none; padding: 20px; max-width: 1600px; margin: auto; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; background: var(--card-bg); padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .user-info { font-weight: bold; color: var(--header-bg); font-size: 16px; }
-        .filters { display: flex; gap: 15px; align-items: center; background: var(--bg-color); padding: 5px 15px; border-radius: 6px; border: 1px solid var(--border-color); }
-        .filters select { padding: 5px; border-radius: 4px; background: var(--input-bg); color: var(--input-text); border: 1px solid var(--border-color); }
-        .stats-bar { display: flex; gap: 20px; font-size: 16px; font-weight: bold; }
-        .controls { display: flex; gap: 10px; }
-        .btn-logout { background: var(--danger); color: white; padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; }
-        
-        /* TABLA */
-        .table-wrapper { overflow-x: auto; background: var(--card-bg); border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
+        :root { --bg-color: #f4f6f9; --text-color: #333; --card-bg: #fff; --header-bg: #1a5276; --header-text: #fff; --border-color: #ddd; --proyectista-bg: #eaf4fc; --evaluador-bg: #fffbe6; --success: #28a745; --danger: #dc3545; --dark-gray: #666; --input-bg: #fff; --input-text: #333; }
+        .dark-mode { --bg-color: #121212; --text-color: #f0f0f0; --card-bg: #1e1e1e; --header-bg: #0d2b4d; --header-text: #fff; --border-color: #444; --proyectista-bg: #0d2235; --evaluador-bg: #332b00; --success: #2ea043; --danger: #f85149; --dark-gray: #ccc; --input-bg: #2d2d2d; --input-text: #fff; }
+        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; transition: 0.3s; }
+        .login-box { background: var(--card-bg); padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; margin: 100px auto; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid var(--border-color); border-radius: 6px; }
+        button { padding: 10px 20px; cursor: pointer; border-radius: 6px; border: none; background: var(--header-bg); color: white; }
+        #app-screen { display: none; max-width: 1600px; margin: auto; }
+        .table-wrapper { overflow-x: auto; background: var(--card-bg); padding: 20px; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; }
         th, td { border: 1px solid var(--border-color); padding: 10px; }
         th { background: var(--header-bg); color: var(--header-text); }
-        .area-header { background: #154360 !important; color: white !important; }
+        .area-header { background: #1a5276 !important; color: white !important; font-weight: bold; }
         .subarea-header { background: #2e4053 !important; color: white !important; }
         .col-proyectista { background-color: var(--proyectista-bg); }
         .col-evaluador { background-color: var(--evaluador-bg); }
-        textarea { width: 100%; padding: 8px; background: var(--input-bg); color: var(--input-text); border: 1px solid var(--border-color); border-radius: 4px; }
-        .img-preview { max-width: 80px; max-height: 80px; cursor: pointer; border: 1px solid var(--border-color); border-radius: 4px; }
+        textarea { width: 100%; height: 60px; }
     </style>
 </head>
 <body>
     <div id="login-screen">
         <div class="login-box">
-            <div class="login-icon">🏗️</div>
             <h2>Ficha de Observaciones</h2>
-            <p class="login-subtitle">C.S. ILAVE</p>
+            <p>C.S. ILAVE</p>
             <input type="text" id="username" placeholder="Tu nombre...">
-            <div class="role-cards-container">
-                <div class="role-card" id="card-Proyectista" onclick="selectRoleTemp('Proyectista')">
-                    <div class="rc-icon">✏️</div><div class="rc-title">Proyectista</div>
-                </div>
-                <div class="role-card" id="card-Evaluador" onclick="selectRoleTemp('Evaluador')">
-                    <div class="rc-icon">🔍</div><div class="rc-title">Evaluador</div>
-                </div>
-            </div>
-            <button class="btn-ingresar" onclick="executeLogin()">Ingresar</button>
+            <br>
+            <button onclick="login('Proyectista')">✏️ Proyectista</button>
+            <button onclick="login('Evaluador')">🔍 Evaluador</button>
         </div>
     </div>
-
     <div id="app-screen">
-        <div class="top-bar">
-            <div id="display-user"></div>
-            <button onclick="toggleDarkMode()">🌙 Modo Oscuro/Claro</button>
-            <button class="btn-logout" onclick="logout()">Salir</button>
-        </div>
+        <button onclick="toggleDarkMode()">🌙 Modo Oscuro/Claro</button>
+        <button class="btn-logout" onclick="location.reload()">Cerrar Sesión</button>
         <div class="table-wrapper">
-            <table id="main-table">
-                <tbody id="table-body"></tbody>
-            </table>
+            <table id="main-table"><tbody id="table-body"></tbody></table>
         </div>
     </div>
-
     <script type="module">
-        // (El código JS es el mismo de la versión anterior)
-        // ... (Aquí iría todo el script que ya tienes funcionando) ...
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+        
+        const firebaseConfig = { apiKey: "AIzaSyCJh-zNhQQ37Hi7_o3NxpQqNpOjNn9yHYM", authDomain: "prueba-de-base-de-datos-bcd6f.firebaseapp.com", databaseURL: "https://prueba-de-base-de-datos-bcd6f-default-rtdb.firebaseio.com", projectId: "prueba-de-base-de-datos-bcd6f", storageBucket: "prueba-de-base-de-datos-bcd6f.firebasestorage.app", messagingSenderId: "258260402501", appId: "1:258260402501:web:c2d1a95d772cd898ca7e2c", measurementId: "G-GV8YTMY8ZH" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        window.login = (role) => {
+            const name = document.getElementById('username').value;
+            if(!name) return alert("Pon tu nombre");
+            localStorage.setItem('obs_user', name);
+            localStorage.setItem('obs_role', role);
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'block';
+        };
+        window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
     </script>
 </body>
 </html>
