@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Fichas - Hospital Ilave</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f9; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 20px; border-radius: 8px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; min-width: 1000px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: top; }
+        th { background-color: #0056b3; color: white; text-align: center; }
+        .area-row { background-color: #d1e7dd; font-weight: bold; text-align: center; font-size: 14px; }
+        .subarea-row { background-color: #e9ecef; font-weight: bold; font-size: 13px; }
+        .estado { text-align: center; font-weight: bold; width: 90px; }
+        .comentario { min-width: 200px; }
+        .conforme { color: green; }
+        .no-conforme { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: #0056b3; text-align: center;">Estado de Revisiones - Instalaciones Sanitarias</h2>
+        <div id="contenedor-tabla">Cargando datos desde Firebase...</div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJh-zNhQQ37Hi7_o3NxpQqNpOjNn9yHYM",
+            authDomain: "prueba-de-base-de-datos-bcd6f.firebaseapp.com",
+            databaseURL: "https://prueba-de-base-de-datos-bcd6f-default-rtdb.firebaseio.com",
+            projectId: "prueba-de-base-de-datos-bcd6f",
+            storageBucket: "prueba-de-base-de-datos-bcd6f.firebasestorage.app",
+            messagingSenderId: "258260402501",
+            appId: "1:258260402501:web:c2d1a95d772cd898ca7e2c",
+            measurementId: "G-GV8YTMY8ZH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const dbRef = ref(db, 'proyectos/hospital_ilave/areas_evaluacion');
+
+        get(dbRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                dibujarTabla(snapshot.val());
+            } else {
+                document.getElementById("contenedor-tabla").innerText = "No se encontraron datos en Firebase. Verifica haber importado el nuevo archivo JSON.";
+            }
+        }).catch((error) => {
+            console.error(error);
+            document.getElementById("contenedor-tabla").innerText = "Error al conectar con Firebase.";
+        });
+
+        function formatEstado(estado) {
+            if (!estado) return '';
+            if (estado === 'Conforme') return '<span class="conforme">Conforme</span>';
+            if (estado === 'No Conforme') return '<span class="no-conforme">No Conforme</span>';
+            return estado;
+        }
+
+        function dibujarTabla(areas) {
+            let html = `<table>
+                <tr>
+                    <th rowspan="2" style="width: 30px;">N°</th>
+                    <th rowspan="2" style="min-width: 250px;">Descripción</th>
+                    <th>Rev. 1</th>
+                    <th colspan="2">Revisión 2</th>
+                    <th colspan="2">Revisión 2.1</th>
+                    <th colspan="2">Revisión 3</th>
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    <th>Estado</th>
+                    <th>Comentarios y Recomendaciones</th>
+                    <th>Estado</th>
+                    <th>Comentarios y Recomendaciones</th>
+                    <th>Estado</th>
+                    <th>Comentarios y Recomendaciones</th>
+                </tr>`;
+
+            areas.forEach(area => {
+                html += `<tr class="area-row"><td colspan="9">${area.nombre_area}</td></tr>`;
+                
+                if(area.subareas) {
+                    area.subareas.forEach(subarea => {
+                        if(subarea.nombre_subarea !== "GENERAL") {
+                            html += `<tr class="subarea-row"><td colspan="9">${subarea.nombre_subarea}</td></tr>`;
+                        }
+                        
+                        if(subarea.observaciones) {
+                            subarea.observaciones.forEach(obs => {
+                                html += `<tr>
+                                    <td>${obs.item_numero || ''}</td>
+                                    <td>${obs.descripcion || ''}</td>
+                                    
+                                    <td class="estado">${formatEstado(obs.estado_revision_1)}</td>
+                                    
+                                    <td class="estado">${formatEstado(obs.estado_revision_2)}</td>
+                                    <td class="comentario">${obs.comentario_revision_2 || ''}</td>
+                                    
+                                    <td class="estado">${formatEstado(obs.estado_revision_2_1)}</td>
+                                    <td class="comentario">${obs.comentario_revision_2_1 || ''}</td>
+                                    
+                                    <td class="estado">${formatEstado(obs.estado_revision_3)}</td>
+                                    <td class="comentario">${obs.comentario_revision_3 || ''}</td>
+                                </tr>`;
+                            });
+                        }
+                    });
+                }
+            });
+
+            html += `</table>`;
+            document.getElementById("contenedor-tabla").innerHTML = html;
+        }
+    </script>
+</body>
+</html>
